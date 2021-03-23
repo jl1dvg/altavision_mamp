@@ -286,423 +286,421 @@ if ($_REQUEST['dispensed']) {
     $dispensed = sqlStatement($query, array($_REQUEST['pid']));
     ?>
     <html>
-<title><?php echo xlt('Rx Dispensed History'); ?></title>
-<head>
+    <title><?php echo xlt('Rx Dispensed History'); ?></title>
+    <head>
 
-    <?php Header::setupHeader(['opener', 'jquery-ui', 'jquery-ui-redmond', 'pure', 'jscolor']); ?>
+        <?php Header::setupHeader(['opener', 'jquery-ui', 'jquery-ui-redmond', 'pure', 'jscolor']); ?>
 
-    <link rel="stylesheet" href="../../forms/<?php echo $form_folder; ?>/css/style.css" type="text/css">
+        <link rel="stylesheet" href="../../forms/<?php echo $form_folder; ?>/css/style.css" type="text/css">
 
-    <style>
-        .title {
-            font-size: 1em;
-            position: absolute;
-            right: 10px;
-            top: 30px;
-            font-size: 1em;
-        }
+        <style>
+            .title {
+                font-size: 1em;
+                position: absolute;
+                right: 10px;
+                top: 30px;
+                font-size: 1em;
+            }
 
-        .refraction {
-            width: 95%;
-            display: -moz-stack;
-            vertical-align: middle;
-            min-height: unset;
-        }
+            .refraction {
+                width: 95%;
+                display: -moz-stack;
+                vertical-align: middle;
+                min-height: unset;
+            }
 
-        .refraction td {
-            text-align: center;
-            font-size: 12px;
-            width: 0.9in;
-            vertical-align: text-middle;
-            text-decoration: unset;
-        }
+            .refraction td {
+                text-align: center;
+                font-size: 12px;
+                width: 0.9in;
+                vertical-align: text-middle;
+                text-decoration: unset;
+            }
 
-        table {
-            font-size: 1.0em;
-            padding: 12px;
-            color: black;
-            vertical-align: text-top;
-        }
+            table {
+                font-size: 1.0em;
+                padding: 12px;
+                color: black;
+                vertical-align: text-top;
+            }
 
-        input[type=text] {
-            text-align: center;
-            width: 60px;
-        }
+            input[type=text] {
+                text-align: center;
+                width: 60px;
+            }
 
-        .refraction b {
-            font-weight: bold;
-        }
+            .refraction b {
+                font-weight: bold;
+            }
 
-        .refraction td.right {
-            text-align: right;
-            text-decoration: unset;
-            width: 0.7in;
-            vertical-align: middle;
-            font-size: 12px;
-        }
+            .refraction td.right {
+                text-align: right;
+                text-decoration: unset;
+                width: 0.7in;
+                vertical-align: middle;
+                font-size: 12px;
+            }
 
-        .refraction td.left {
-            vertical-align: middle;
-            text-align: left;
-            font-size: 12px;
-        }
+            .refraction td.left {
+                vertical-align: middle;
+                text-align: left;
+                font-size: 12px;
+            }
 
-        .right {
-            text-align: right;
-            vertical-align: middle;
-        }
+            .right {
+                text-align: right;
+                vertical-align: middle;
+            }
 
-        .left {
-            vertical-align: middle;
-            text-align: left;
-        }
+            .left {
+                vertical-align: middle;
+                text-align: left;
+            }
 
-        .title {
-            font-size: 0.9em;
-            font-weight: normal;
-        }
+            .title {
+                font-size: 0.9em;
+                font-weight: normal;
+            }
 
-        .bold {
-            font-weight: 600;
-        }
+            .bold {
+                font-weight: 600;
+            }
 
-        input {
-            width: 60px;
-        }
+            input {
+                width: 60px;
+            }
 
-        input[type="radio"] {
-            width: 15px;
-        }
+            input[type="radio"] {
+                width: 15px;
+            }
 
-        .underline {
-            text-decoration: underline !important
-        }
+            .underline {
+                text-decoration: underline !important
+            }
 
-        #CTLODQUANTITY, #CTLOSQUANTITY {
-            width: 300px;
-        }
-    </style>
-    <script language="JavaScript">
-        <?php
-        require_once("$srcdir/restoreSession.php");  ?>
-
-        function delete_me(delete_id) {
-            top.restoreSession();
-            var url = "../../forms/eye_mag/SpectacleRx.php";
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: {
-                    mode: 'remove',
-                    delete_id: delete_id,
-                    dispensed: '1'
-                } // our data object
-            }).done(function (o) {
-                $('#RXID_' + delete_id).hide();
-                alert(o);
-            });
-        }
-
-
-
-    </script>
-</head>
-<?php echo report_header($pid, "web"); ?>
-<div class="row">
-    <div class="col-sm-8 offset-sm-2" style="margin:5;text-align:center;width:560px;">
-        <table>
-            <tr>
-                <td colspan="2"><h4 class="underline"><?php echo xlt('Rx History'); ?></h4></td>
-            </tr>
+            #CTLODQUANTITY, #CTLOSQUANTITY {
+                width: 300px;
+            }
+        </style>
+        <script language="JavaScript">
             <?php
-            if (sqlNumRows($dispensed) == 0) {
-                echo "<tr><td colspan='2' style='font-size:1.2em;text-align:middle;padding:25px;'>" . xlt('There are no Glasses or Contact Lens Presciptions on file for this patient') . "</td></tr>";
-            }
-            ?>
-        </table>
-        <?php
-        while ($row = sqlFetchArray($dispensed)) {
-            $i++;
-            $Single = '';
-            $Bifocal = '';
-            $Trifocal = '';
-            $Progressive = '';
-            if ($row['RXTYPE'] == "Single") {
-                $Single = "checked='checked'";
-            }
+            require_once("$srcdir/restoreSession.php");  ?>
 
-            if ($row['RXTYPE'] == "Bifocal") {
-                $Bifocal = "checked='checked'";
-            }
-
-            if ($row['RXTYPE'] == "Trifocal") {
-                $Trifocal = "checked='checked'";
+            function delete_me(delete_id) {
+                top.restoreSession();
+                var url = "../../forms/eye_mag/SpectacleRx.php";
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: {
+                        mode: 'remove',
+                        delete_id: delete_id,
+                        dispensed: '1'
+                    } // our data object
+                }).done(function (o) {
+                    $('#RXID_' + delete_id).hide();
+                    alert(o);
+                });
             }
 
-            if ($row['RXTYPE'] == "Progressive") {
-                $Progressive = "checked='checked'";
-            }
+        </script>
+    </head>
+    <?php echo report_header($pid, "web"); ?>
+    <div class="row">
+        <div class="col-sm-8 offset-sm-2" style="margin:5;text-align:center;width:560px;">
+            <table>
+                <tr>
+                    <td colspan="2"><h4 class="underline"><?php echo xlt('Rx History'); ?></h4></td>
+                </tr>
+                <?php
+                if (sqlNumRows($dispensed) == 0) {
+                    echo "<tr><td colspan='2' style='font-size:1.2em;text-align:middle;padding:25px;'>" . xlt('There are no Glasses or Contact Lens Presciptions on file for this patient') . "</td></tr>";
+                }
+                ?>
+            </table>
+            <?php
+            while ($row = sqlFetchArray($dispensed)) {
+                $i++;
+                $Single = '';
+                $Bifocal = '';
+                $Trifocal = '';
+                $Progressive = '';
+                if ($row['RXTYPE'] == "Single") {
+                    $Single = "checked='checked'";
+                }
 
-            $row['date'] = oeFormatShortDate(date('Y-m-d', strtotime($row['date'])));
-            if ($row['REFTYPE'] == "CTL") {
-                $expir = date("Y-m-d", strtotime($CTL_expir, strtotime($row['REFDATE'])));
-            } else {
-                $expir = date("Y-m-d", strtotime($RX_expir, strtotime($row['REFDATE'])));
-            }
-            $expir_date = oeFormatShortDate($expir);
-            $row['REFDATE'] = oeFormatShortDate($row['REFDATE']);
+                if ($row['RXTYPE'] == "Bifocal") {
+                    $Bifocal = "checked='checked'";
+                }
 
-            ?>
-            <div id="RXID_<?php echo attr($row['id']); ?>"
-                 style="position:relative;text-align:center;margin: 10 auto;">
-                <i class="float-right fa fa-close"
-                   onclick="delete_me('<?php echo attr(addslashes($row['id'])); ?>');"
-                   title="<?php echo xla('Remove this Prescription from the list of RXs dispensed'); ?>"></i>
-                <table style="margin:2px auto;width:490px;">
-                    <tr>
-                        <td class="right bold" style="width:250px;"><b><?php echo xlt('RX Print Date'); ?>: </b></td>
-                        <td>&nbsp;&nbsp;<?php echo text($row['date']); ?></td>
-                    </tr>
-                    <tr>
-                        <td class="right bold"><b><?php echo xlt('Visit Date'); ?>: </b></td>
-                        <td>&nbsp;&nbsp;<?php echo text($row['REFDATE']); ?></td>
-                    </tr>
-                    <tr>
-                        <td class="right bold"><b><?php echo xlt('Expiration Date'); ?>: </b></td>
-                        <td>&nbsp;&nbsp;<?php
-                            echo text($expir_date);
-                            ?>
-                        </td>
-                    </tr>
+                if ($row['RXTYPE'] == "Trifocal") {
+                    $Trifocal = "checked='checked'";
+                }
 
-                    <tr>
-                        <td class="right bold"><?php echo xlt('Refraction Method'); ?>:</td>
-                        <td>&nbsp;&nbsp;<?php
-                            if ($row['REFTYPE'] == "W") {
-                                echo xlt('Duplicate Rx -- unchanged from current Rx{{The refraction did not change, New Rx=old Rx}}');
-                            } elseif ($row['REFTYPE'] == "CR") {
-                                echo xlt('Cycloplegic (Wet) Refraction');
-                            } elseif ($row['REFTYPE'] == "MR") {
-                                echo xlt('Manifest (Dry) Refraction');
-                            } elseif ($row['REFTYPE'] == "AR") {
-                                echo xlt('Auto-Refraction');
-                            } elseif ($row['REFTYPE'] == "CTL") {
-                                echo xlt('Contact Lens');
-                            } else {
-                                echo $row['REFTYPE'];
-                            } ?>
-                            <input type="hidden" name="REFTYPE" value="<?php echo attr($row['REFTYPE']); ?>"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" class="text-center"> <?php
-                            if ($row['REFTYPE'] != "CTL") { ?>
-                                <table id="SpectacleRx" name="SpectacleRx" class="refraction" style="top:0px;">
-                                    <tr style="font-style:bold;">
-                                        <td></td>
-                                        <td></td>
-                                        <td class="center bold underline"><?php echo xlt('Sph{{Sphere}}'); ?></td>
-                                        <td class="center bold underline"><?php echo xlt('Cyl{{Cylinder}}'); ?></td>
-                                        <td class="center bold underline"><?php echo xlt('Axis{{Axis in a glasses prescription}}'); ?></td>
-                                        <td rowspan="5" class="right bold underline" colspan="2"
-                                            style="min-width:100px;font-weight:bold;">
-                                            <?php echo xlt('Rx Type'); ?><br/><br/>
-                                            <?php echo xlt('Monofocal'); ?>
-                                            <input type="radio" disabled <?php echo text($Single); ?>><br/>
-                                            <?php echo xlt('Bifocal'); ?>
-                                            <input type="radio" disabled <?php echo text($Bifocal); ?>><br/>
-                                            <?php echo xlt('Trifocal'); ?>
-                                            <input type="radio" disabled <?php echo text($Trifocal); ?>><br/>
-                                            <?php echo xlt('Prog.{{Progressive lenses}}'); ?>
-                                            <input type="radio" disabled <?php echo text($Progressive); ?>><br/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td rowspan="2"
-                                            style="text-align:right;font-weight:bold;"><?php echo xlt('Distance'); ?></td>
-                                        <td><b><?php echo xlt('OD{{right eye}}'); ?></b></td>
-                                        <td><?php echo text($row['ODSPH']); ?></td>
-                                        <td><?php echo text($row['ODCYL']); ?></td>
-                                        <td><?php echo text($row['ODAXIS']); ?></td>
-                                        <td><?php echo text($row['ODPRISM']); ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td><b><?php echo xlt('OS{{left eye}}'); ?></b></td>
-                                        <td><?php echo text($row['OSSPH']); ?></td>
-                                        <td><?php echo text($row['OSCYL']); ?></td>
-                                        <td><?php echo text($row['OSAXIS']); ?></td>
-                                        <td><?php echo text($row['OSPRISM']); ?></td>
-                                    </tr>
-                                    <tr class="NEAR">
-                                        <td rowspan=2 nowrap><span class="bold"
-                                                                   style="text-decoration:none;"><?php echo xlt('ADD'); ?>
-                                                :<br/><?php echo xlt("Mid{{Middle segment in a trifocal glasses prescription}}"); ?>
-                                                /<?php echo xlt("Near"); ?></span></td>
-                                        <td><b><?php echo xlt('OD{{right eye}}'); ?></b></td>
-                                        <td class="WMid"><?php echo text($row['ODMIDADD']); ?></td>
-                                        <td class="WAdd2"><?php echo text($row['ODADD2']); ?></td>
-                                    </tr>
-                                    <tr class="NEAR">
-                                        <td><b><?php echo xlt('OS{{left eye}}'); ?></b></td>
-                                        <td class="WMid"><?php echo text($row['OSMIDADD']); ?></td>
-                                        <td class="WAdd2"><?php echo text($row['OSADD2']); ?></td>
-                                    </tr>
-                                    <tr style="">
-                                        <td colspan="2" class="up"
-                                            style="text-align:right;vertical-align:top;top:0px;font-weight:bold;"><?php echo xlt('Comments'); ?>
-                                            :
-                                        </td>
-                                        <td colspan="4" class="up left"></td>
-                                        <?php echo text($row['CRCOMMENTS']); ?>
-                                        </td>
-                                    </tr>
-                                </table>
-                                <?php
-                            } else {
-                                if (!empty($row['ODADD']) || !empty($row['OSADD'])) {
-                                    $adds = 1;
-                                } else {
-                                    $adds = '';
-                                }
+                if ($row['RXTYPE'] == "Progressive") {
+                    $Progressive = "checked='checked'";
+                }
+
+                $row['date'] = oeFormatShortDate(date('Y-m-d', strtotime($row['date'])));
+                if ($row['REFTYPE'] == "CTL") {
+                    $expir = date("Y-m-d", strtotime($CTL_expir, strtotime($row['REFDATE'])));
+                } else {
+                    $expir = date("Y-m-d", strtotime($RX_expir, strtotime($row['REFDATE'])));
+                }
+                $expir_date = oeFormatShortDate($expir);
+                $row['REFDATE'] = oeFormatShortDate($row['REFDATE']);
+
+                ?>
+                <div id="RXID_<?php echo attr($row['id']); ?>"
+                     style="position:relative;text-align:center;margin: 10 auto;">
+                    <i class="float-right fa fa-close"
+                       onclick="delete_me('<?php echo attr(addslashes($row['id'])); ?>');"
+                       title="<?php echo xla('Remove this Prescription from the list of RXs dispensed'); ?>"></i>
+                    <table style="margin:2px auto;width:490px;">
+                        <tr>
+                            <td class="right bold" style="width:250px;"><b><?php echo xlt('RX Print Date'); ?>: </b></td>
+                            <td>&nbsp;&nbsp;<?php echo text($row['date']); ?></td>
+                        </tr>
+                        <tr>
+                            <td class="right bold"><b><?php echo xlt('Visit Date'); ?>: </b></td>
+                            <td>&nbsp;&nbsp;<?php echo text($row['REFDATE']); ?></td>
+                        </tr>
+                        <tr>
+                            <td class="right bold"><b><?php echo xlt('Expiration Date'); ?>: </b></td>
+                            <td>&nbsp;&nbsp;<?php
+                                echo text($expir_date);
                                 ?>
-                                <table id="CTLRx" name="CTLRx" class="refraction">
-                                    <tr>
-                                        <td colspan="4"
-                                            class="bold left text-uppercase text-top" style="display: flex;
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="right bold"><?php echo xlt('Refraction Method'); ?>:</td>
+                            <td>&nbsp;&nbsp;<?php
+                                if ($row['REFTYPE'] == "W") {
+                                    echo xlt('Duplicate Rx -- unchanged from current Rx{{The refraction did not change, New Rx=old Rx}}');
+                                } elseif ($row['REFTYPE'] == "CR") {
+                                    echo xlt('Cycloplegic (Wet) Refraction');
+                                } elseif ($row['REFTYPE'] == "MR") {
+                                    echo xlt('Manifest (Dry) Refraction');
+                                } elseif ($row['REFTYPE'] == "AR") {
+                                    echo xlt('Auto-Refraction');
+                                } elseif ($row['REFTYPE'] == "CTL") {
+                                    echo xlt('Contact Lens');
+                                } else {
+                                    echo $row['REFTYPE'];
+                                } ?>
+                                <input type="hidden" name="REFTYPE" value="<?php echo attr($row['REFTYPE']); ?>"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="text-center"> <?php
+                                if ($row['REFTYPE'] != "CTL") { ?>
+                                    <table id="SpectacleRx" name="SpectacleRx" class="refraction" style="top:0px;">
+                                        <tr style="font-style:bold;">
+                                            <td></td>
+                                            <td></td>
+                                            <td class="center bold underline"><?php echo xlt('Sph{{Sphere}}'); ?></td>
+                                            <td class="center bold underline"><?php echo xlt('Cyl{{Cylinder}}'); ?></td>
+                                            <td class="center bold underline"><?php echo xlt('Axis{{Axis in a glasses prescription}}'); ?></td>
+                                            <td rowspan="5" class="right bold underline" colspan="2"
+                                                style="min-width:100px;font-weight:bold;">
+                                                <?php echo xlt('Rx Type'); ?><br/><br/>
+                                                <?php echo xlt('Monofocal'); ?>
+                                                <input type="radio" disabled <?php echo text($Single); ?>><br/>
+                                                <?php echo xlt('Bifocal'); ?>
+                                                <input type="radio" disabled <?php echo text($Bifocal); ?>><br/>
+                                                <?php echo xlt('Trifocal'); ?>
+                                                <input type="radio" disabled <?php echo text($Trifocal); ?>><br/>
+                                                <?php echo xlt('Prog.{{Progressive lenses}}'); ?>
+                                                <input type="radio" disabled <?php echo text($Progressive); ?>><br/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td rowspan="2"
+                                                style="text-align:right;font-weight:bold;"><?php echo xlt('Distance'); ?></td>
+                                            <td><b><?php echo xlt('OD{{right eye}}'); ?></b></td>
+                                            <td><?php echo text($row['ODSPH']); ?></td>
+                                            <td><?php echo text($row['ODCYL']); ?></td>
+                                            <td><?php echo text($row['ODAXIS']); ?></td>
+                                            <td><?php echo text($row['ODPRISM']); ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td><b><?php echo xlt('OS{{left eye}}'); ?></b></td>
+                                            <td><?php echo text($row['OSSPH']); ?></td>
+                                            <td><?php echo text($row['OSCYL']); ?></td>
+                                            <td><?php echo text($row['OSAXIS']); ?></td>
+                                            <td><?php echo text($row['OSPRISM']); ?></td>
+                                        </tr>
+                                        <tr class="NEAR">
+                                            <td rowspan=2 nowrap><span class="bold"
+                                                                       style="text-decoration:none;"><?php echo xlt('ADD'); ?>
+                                                    :<br/><?php echo xlt("Mid{{Middle segment in a trifocal glasses prescription}}"); ?>
+                                                    /<?php echo xlt("Near"); ?></span></td>
+                                            <td><b><?php echo xlt('OD{{right eye}}'); ?></b></td>
+                                            <td class="WMid"><?php echo text($row['ODMIDADD']); ?></td>
+                                            <td class="WAdd2"><?php echo text($row['ODADD2']); ?></td>
+                                        </tr>
+                                        <tr class="NEAR">
+                                            <td><b><?php echo xlt('OS{{left eye}}'); ?></b></td>
+                                            <td class="WMid"><?php echo text($row['OSMIDADD']); ?></td>
+                                            <td class="WAdd2"><?php echo text($row['OSADD2']); ?></td>
+                                        </tr>
+                                        <tr style="">
+                                            <td colspan="2" class="up"
+                                                style="text-align:right;vertical-align:top;top:0px;font-weight:bold;"><?php echo xlt('Comments'); ?>
+                                                :
+                                            </td>
+                                            <td colspan="4" class="up left"></td>
+                                            <?php echo text($row['CRCOMMENTS']); ?>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <?php
+                                } else {
+                                    if (!empty($row['ODADD']) || !empty($row['OSADD'])) {
+                                        $adds = 1;
+                                    } else {
+                                        $adds = '';
+                                    }
+                                    ?>
+                                    <table id="CTLRx" name="CTLRx" class="refraction">
+                                        <tr>
+                                            <td colspan="4"
+                                                class="bold left text-uppercase text-top" style="display: flex;
                                             align-items:top"><u><?php echo xlt('Right Lens'); ?></u>
-                                        </td>
-                                    </tr>
-                                    <tr class="bold underline">
-                                        <td></td>
-                                        <td><?php echo xlt('Sph{{Sphere}}'); ?></td>
-                                        <td><?php echo xlt('Cyl{{Cylinder}}'); ?></td>
-                                        <td><?php echo xlt('Axis{{Axis in a glasses prescription}}'); ?></td>
-                                        <td><?php echo xlt('BC{{Base Curve}}'); ?></td>
-                                        <td><?php echo xlt('Diam{{Diameter}}'); ?></td>
-                                        <?php
-                                        if ($adds) {
-                                            ?>
-                                            <td><?php echo xlt('ADD'); ?></td>
-                                        <?php }
-                                        ?>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td><?php echo text($row['ODSPH']); ?></td>
-                                        <td><?php echo text($row['ODCYL']); ?></td>
-                                        <td><?php echo text($row['ODAXIS']); ?></td>
-                                        <td><?php echo text($row['ODBC']); ?></td>
-                                        <td><?php echo text($row['ODDIAM']); ?></td>
-                                        <?php
-                                        if ($adds) {
-                                            ?>
-                                            <td><?php echo text($row['ODADD']); ?></td>
-                                        <?php } ?>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" class="right bold">
-                                            <?php echo xlt('Brand'); ?>: <br/>
-                                            <?php echo xlt('Quantity'); ?>: <br/>
-                                            <?php echo xlt('Supplier'); ?>:
-                                        </td>
-                                        <td colspan="5" class="left" style="padding-left:10px;vertical-align:top;">
-                                            <?php echo text($row['CTLBRANDOD']); ?>
+                                            </td>
+                                        </tr>
+                                        <tr class="bold underline">
+                                            <td></td>
+                                            <td><?php echo xlt('Sph{{Sphere}}'); ?></td>
+                                            <td><?php echo xlt('Cyl{{Cylinder}}'); ?></td>
+                                            <td><?php echo xlt('Axis{{Axis in a glasses prescription}}'); ?></td>
+                                            <td><?php echo xlt('BC{{Base Curve}}'); ?></td>
+                                            <td><?php echo xlt('Diam{{Diameter}}'); ?></td>
                                             <?php
-                                            if (!empty($row['CTLMANUFACTUREROD'])) {
-                                                echo "(" . text($row['CTLMANUFACTUREROD']) . ")";
-                                            } ?>
-                                            <br/>
-                                            <?php echo text($row['CTLODQUANTITY']); ?><br/>
-                                            <?php echo text($row['CTLSUPPLIEROD']); ?>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="7">
-                                            <hr/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="4"
-                                            class="bold left text-uppercase text-top"
-                                            style="display: flex;align-items:top">
-                                            <u><?php echo xlt('Left Lens'); ?></u>
-                                        </td>
-                                    </tr>
-                                    <tr class="bold underline">
-                                        <td></td>
-                                        <td><?php echo xlt('Sph{{Sphere}}'); ?></td>
-                                        <td><?php echo xlt('Cyl{{Cylinder}}'); ?></td>
-                                        <td><?php echo xlt('Axis{{Axis in a glasses prescription}}'); ?></td>
-                                        <td><?php echo xlt('BC{{Base Curve}}'); ?></td>
-                                        <td><?php echo xlt('Diam{{Diameter}}'); ?></td>
-                                        <?php
-                                        if ($adds) {
+                                            if ($adds) {
+                                                ?>
+                                                <td><?php echo xlt('ADD'); ?></td>
+                                            <?php }
                                             ?>
-                                            <td><?php echo xlt('ADD'); ?></td>
-                                        <?php }
-                                        ?>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td><?php echo text($row['OSSPH']); ?></td>
-                                        <td><?php echo text($row['OSCYL']); ?></td>
-                                        <td><?php echo text($row['OSAXIS']); ?></td>
-                                        <td><?php echo text($row['OSBC']); ?></td>
-                                        <td><?php echo text($row['OSDIAM']); ?></td>
-                                        <?php
-                                        if ($adds) {
-                                            ?>
-                                            <td><?php echo text($row['OSADD']); ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td><?php echo text($row['ODSPH']); ?></td>
+                                            <td><?php echo text($row['ODCYL']); ?></td>
+                                            <td><?php echo text($row['ODAXIS']); ?></td>
+                                            <td><?php echo text($row['ODBC']); ?></td>
+                                            <td><?php echo text($row['ODDIAM']); ?></td>
                                             <?php
-                                        } ?>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" class="right bold">
-                                            <?php echo xlt('Brand'); ?>: <br/>
-                                            <?php echo xlt('Quantity'); ?>: <br/>
-                                            <?php echo xlt('Supplier'); ?>:
-                                        </td>
-                                        <td colspan="5" class="left"
-                                            style="padding-left:10px;vertical-align:top;"><?php echo text($row['CTLBRANDOS']); ?>
-                                            <?php
-                                            if (!empty($row['CTLMANUFACTUREROS'])) {
-                                                echo "(" . text($row['CTLMANUFACTUREROS']) . ")";
-                                            } ?>
-                                            <br/>
-                                            <?php echo text($row['CTLOSQUANTITY']); ?><br/>
-                                            <?php echo text($row['CTLSUPPLIEROS']); ?>
-                                        </td>
-                                    </tr>
-                                    <?php if (!empty($row['COMMENTS'])) { ?>
+                                            if ($adds) {
+                                                ?>
+                                                <td><?php echo text($row['ODADD']); ?></td>
+                                            <?php } ?>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" class="right bold">
+                                                <?php echo xlt('Brand'); ?>: <br/>
+                                                <?php echo xlt('Quantity'); ?>: <br/>
+                                                <?php echo xlt('Supplier'); ?>:
+                                            </td>
+                                            <td colspan="5" class="left" style="padding-left:10px;vertical-align:top;">
+                                                <?php echo text($row['CTLBRANDOD']); ?>
+                                                <?php
+                                                if (!empty($row['CTLMANUFACTUREROD'])) {
+                                                    echo "(" . text($row['CTLMANUFACTUREROD']) . ")";
+                                                } ?>
+                                                <br/>
+                                                <?php echo text($row['CTLODQUANTITY']); ?><br/>
+                                                <?php echo text($row['CTLSUPPLIEROD']); ?>
+                                            </td>
+                                        </tr>
                                         <tr>
                                             <td colspan="7">
                                                 <hr/>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td colspan="3" class="bold right"><?php echo xlt('Comments'); ?>:
-                                            </td>
-                                            <td colspan="3" class="left"
-                                                style="padding-left:10px;vertical-align:middle;top:0px;">
-                                                <?php echo text($row['COMMENTS']); ?>
+                                            <td colspan="4"
+                                                class="bold left text-uppercase text-top"
+                                                style="display: flex;align-items:top">
+                                                <u><?php echo xlt('Left Lens'); ?></u>
                                             </td>
                                         </tr>
-                                    <?php } ?>
-                                </table>
+                                        <tr class="bold underline">
+                                            <td></td>
+                                            <td><?php echo xlt('Sph{{Sphere}}'); ?></td>
+                                            <td><?php echo xlt('Cyl{{Cylinder}}'); ?></td>
+                                            <td><?php echo xlt('Axis{{Axis in a glasses prescription}}'); ?></td>
+                                            <td><?php echo xlt('BC{{Base Curve}}'); ?></td>
+                                            <td><?php echo xlt('Diam{{Diameter}}'); ?></td>
+                                            <?php
+                                            if ($adds) {
+                                                ?>
+                                                <td><?php echo xlt('ADD'); ?></td>
+                                            <?php }
+                                            ?>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td><?php echo text($row['OSSPH']); ?></td>
+                                            <td><?php echo text($row['OSCYL']); ?></td>
+                                            <td><?php echo text($row['OSAXIS']); ?></td>
+                                            <td><?php echo text($row['OSBC']); ?></td>
+                                            <td><?php echo text($row['OSDIAM']); ?></td>
+                                            <?php
+                                            if ($adds) {
+                                                ?>
+                                                <td><?php echo text($row['OSADD']); ?></td>
+                                                <?php
+                                            } ?>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" class="right bold">
+                                                <?php echo xlt('Brand'); ?>: <br/>
+                                                <?php echo xlt('Quantity'); ?>: <br/>
+                                                <?php echo xlt('Supplier'); ?>:
+                                            </td>
+                                            <td colspan="5" class="left"
+                                                style="padding-left:10px;vertical-align:top;"><?php echo text($row['CTLBRANDOS']); ?>
+                                                <?php
+                                                if (!empty($row['CTLMANUFACTUREROS'])) {
+                                                    echo "(" . text($row['CTLMANUFACTUREROS']) . ")";
+                                                } ?>
+                                                <br/>
+                                                <?php echo text($row['CTLOSQUANTITY']); ?><br/>
+                                                <?php echo text($row['CTLSUPPLIEROS']); ?>
+                                            </td>
+                                        </tr>
+                                        <?php if (!empty($row['COMMENTS'])) { ?>
+                                            <tr>
+                                                <td colspan="7">
+                                                    <hr/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3" class="bold right"><?php echo xlt('Comments'); ?>:
+                                                </td>
+                                                <td colspan="3" class="left"
+                                                    style="padding-left:10px;vertical-align:middle;top:0px;">
+                                                    <?php echo text($row['COMMENTS']); ?>
+                                                </td>
+                                            </tr>
+                                        <?php } ?>
+                                    </table>
 
-                                <?php
-                            } ?>
-                        </td>
-                    </tr>
-                </table>
-                <hr>
+                                    <?php
+                                } ?>
+                            </td>
+                        </tr>
+                    </table>
+                    <hr>
 
-            </div>
-            <?php
-        } ?>
+                </div>
+                <?php
+            } ?>
+        </div>
     </div>
-</div>
-</body>
+    </body>
     </html>
     <?php
     exit;
@@ -923,7 +921,7 @@ ob_start();
     </script>
 </head>
 <body>
-<?php echo rx_header($pid, "web"); ?>
+<?php echo report_header($pid, "web"); ?>
 <br/><br/>
 <?php
 if ($REFTYPE == "CTL") {
@@ -956,10 +954,12 @@ $expir_date = oeFormatShortDate($expir);
                         <table id="SpectacleRx" name="SpectacleRx" class="refraction bordershadow"
                                style="min-width:610px;top:0px;">
                             <tr style="font-weight:bold;text-align:center;">
-                                <td><i name="print_rx" id="print_rx" class="closeButton_5 fa fa-file-pdf-o"
-                                       onclick="rx_print()" "></i>
+                                <td><i name="reverse" id="reverse" class="fa fa-gamepad fa-2x"></i></td>
+                                <td><a class="closeButton_5 fa fa-file-pdf-o"
+                                       title="<?php echo xla('Once completed, view and store this encounter as a PDF file'); ?>"
+                                       target="_report"
+                                       href="<?php echo $GLOBALS['webroot']; ?>/interface/forms/eye_mag/rx.php?printable=1&pdf=1&<?php echo $form_folder . "_" . $form_id . "=" . $encounter; ?>&"></a>
                                 </td>
-                                <td></td>
                                 <td><?php echo xlt('Sph{{Sphere}}'); ?></td>
                                 <td><?php echo xlt('Cyl{{Cylinder}}'); ?></td>
                                 <td><?php echo xlt('Axis{{Axis of a glasses prescription}}'); ?></td>
@@ -1033,13 +1033,6 @@ $expir_date = oeFormatShortDate($expir);
                                 </td>
                             </tr>
                             <tr>
-                                <td></td>
-                                <td class="right bold"><?php echo xlt('DP'); ?></td>
-                                <td name="DP">
-                                    <input type="text" id="DP" name="DP"
-                                           value="<?php echo attr($BPDD); ?>"></td>
-                            </tr>
-                            <tr>
                                 <td colspan="2" class="center bold"><?php echo xlt('Comments'); ?>:</td>
                                 <td colspan="4">
                                     <textarea style="width:100%;height:3em;" id="CRCOMMENTS"
@@ -1053,7 +1046,7 @@ $expir_date = oeFormatShortDate($expir);
                                                     if (
                                                         $ODHPD || $ODHBASE || $ODVPD || $ODVBASE || $ODSLABOFF || $ODVERTEXDIST ||
                                                         $OSHPD || $OSHBASE || $OSVPD || $OSVBASE || $OSSLABOFF || $OSVERTEXDIST ||
-                                                        $ODMPDD || $ODMPDN || $OSMPDD || $OSMPDN || $BPDN ||
+                                                        $ODMPDD || $ODMPDN || $OSMPDD || $OSMPDN || $BPDD || $BPDN ||
                                                         $LENS_MATERIAL || $LENS_TREATMENTS
                                                     ) {
                                                         $detailed = '1';
@@ -1523,9 +1516,6 @@ $expir_date = oeFormatShortDate($expir);
         });
 
     });
-    function rx_print() {
-        window.print();
-    }
 </script>
 </html>
 
