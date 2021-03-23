@@ -1,0 +1,18 @@
+{
+  "logger": {
+    "title": "Remote Sync"
+  },
+  "uploadOnSave": false,
+  "useAtomicWrites": false,
+  "deleteLocal": false,
+  "hostname": "34.94.118.129",
+  "ignore": [
+    ".remote-sync.json",
+    ".git/**"
+  ],
+  "username": "jorge-altavision",
+  "keyfile": "C:\\Users\\Administrator\\Desktop\\jorge_altavision_privatekey.ppk",
+  "passphrase": "JorgeAMI2018",
+  "watch": [],
+  "transport": "scp"
+}
