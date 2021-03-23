@@ -26,13 +26,6 @@ if (!empty($_POST)) {
     }
 }
 
-// Prepare a string for CSV export.
-function qescape($str)
-{
-    $str = str_replace('\\', '\\\\', $str);
-    return str_replace('"', '\\"', $str);
-}
-
 $from_date = DateToYYYYMMDD($_POST['form_from_date']);
 $to_date   = DateToYYYYMMDD($_POST['form_to_date']);
 if (empty($to_date) && !empty($from_date)) {
@@ -210,6 +203,8 @@ if ($_POST['form_refresh'] || $_POST['form_csvexport']) {
         echo '"' . xl('State') . '",';
         echo '"' . xl('Zip') . '",';
         echo '"' . xl('Home Phone') . '",';
+        echo '"' . xl('Cell Phone') . '",';
+        echo '"' . xl('Contact Phone') . '",';
         echo '"' . xl('Work Phone') . '"' . "\n";
     } else {
         ?>
@@ -225,6 +220,8 @@ if ($_POST['form_refresh'] || $_POST['form_csvexport']) {
     <th> <?php echo xlt('State'); ?> </th>
     <th> <?php echo xlt('Zip'); ?> </th>
     <th> <?php echo xlt('Home Phone'); ?> </th>
+    <th> <?php echo xlt('Cell Phone'); ?> </th>
+    <th> <?php echo xlt('Contact Phone'); ?> </th>
     <th> <?php echo xlt('Work Phone'); ?> </th>
  </thead>
  <tbody>
@@ -234,7 +231,7 @@ if ($_POST['form_refresh'] || $_POST['form_csvexport']) {
     $sqlArrayBind = array();
     $query = "SELECT " .
     "p.fname, p.mname, p.lname, p.street, p.city, p.state, " .
-    "p.postal_code, p.phone_home, p.phone_biz, p.pid, p.pubpid, " .
+    "p.postal_code, p.phone_home, p.phone_biz, p.phone_cell, p.phone_contact, p.pid, p.pubpid, " .
     "count(e.date) AS ecount, max(e.date) AS edate, " .
     "i1.date AS idate1, i2.date AS idate2, " .
     "c1.name AS cname1, c2.name AS cname2 " .
@@ -305,6 +302,8 @@ if ($_POST['form_refresh'] || $_POST['form_csvexport']) {
             echo '"' . qescape(xl($row['state'])) . '",';
             echo '"' . qescape($row['postal_code']) . '",';
             echo '"' . qescape($row['phone_home']) . '",';
+            echo '"' . qescape($row['phone_cell']) . '",';
+            echo '"' . qescape($row['phone_contact']) . '",';
             echo '"' . qescape($row['phone_biz']) . '"' . "\n";
         } else {
             ?>
@@ -332,6 +331,12 @@ if ($_POST['form_refresh'] || $_POST['form_csvexport']) {
    </td>
    <td>
             <?php echo text($row['phone_home']); ?>
+   </td>
+           <td>
+            <?php echo text($row['phone_cell']); ?>
+   </td>
+           <td>
+            <?php echo text($row['phone_contact']); ?>
    </td>
    <td>
             <?php echo text($row['phone_biz']); ?>
