@@ -209,6 +209,25 @@ function getDocumentsByEncounter($patientID = null, $encounterID = null)
     return $allDocuments;
 }
 
+function getDocumentsByGroupByEncounter($patientID = null, $encounterID = null)
+{
+    $allDocuments = null;
+    $currentEncounter = ( $encounterID ) ? $encounterID : $_SESSION['encounter'];
+    $currentPatient = ( $patientID ) ? $patientID : $_SESSION['pid'];
+
+    if ($currentPatient != "" && $currentEncounter != "") {
+        $sql = "SELECT d.id, d.type, d.url, d.docdate, d.list_id, c.name,d.encounter_id FROM documents AS d, categories_to_documents AS cd,
+			categories AS c WHERE d.foreign_id = ? AND d.encounter_id=? AND cd.document_id = d.id AND c.id = cd.category_id GROUP BY cd.category_id ORDER BY d.docdate DESC, d.id DESC";
+        $res = sqlStatement($sql, array($currentPatient,$currentEncounter));
+
+        while ($row = sqlFetchArray($res)) {
+            $allDocuments[] = $row;
+        }
+    }
+
+    return $allDocuments;
+}
+
 function hasFormPermission($formDir)
 {
     // get the aco spec from registry table
