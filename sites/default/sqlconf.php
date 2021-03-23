@@ -4,9 +4,9 @@
 
 $host	= 'localhost';
 $port	= '3306';
-$login	= 'root';
-$pass	= 'JorgeAMI2018';
-$dbase	= 'altavision';
+$login	= 'cive';
+$pass	= 'cive';
+$dbase	= 'cive';
 
 //Added ability to disable
 //utf8 encoding - bm 05-2009
@@ -24,7 +24,7 @@ $sqlconf["dbase"] = $dbase;
 //////////////////////////
 //////////////////////////
 //////DO NOT TOUCH THIS///
-$config = 1; /////////////
+$config = 0; /////////////
 //////////////////////////
 //////////////////////////
 //////////////////////////
