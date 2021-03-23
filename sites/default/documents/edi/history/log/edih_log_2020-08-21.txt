@@ -1,0 +1,18 @@
+20200821:080823 _GET request 
+ srvinfo => yes  csrf_token_form => 4de60b3e645bf9bd10e121900af4ff768ad6df97 
+20200821:080823 _GET request 
+ csvtbllist => yes  csrf_token_form => 4de60b3e645bf9bd10e121900af4ff768ad6df97 
+20200821:080823 _GET request 
+ loglist => yes  csrf_token_form => 4de60b3e645bf9bd10e121900af4ff768ad6df97 
+20200821:080823 _GET request 
+ archlist => yes  csrf_token_form => 4de60b3e645bf9bd10e121900af4ff768ad6df97 
+20200821:080823 csv_archive_select_list: using /var/www/html/altavision/sites/default/documents/edi/history/archive
+20200821:080835 _GET request 
+ srvinfo => yes  csrf_token_form => 91fcf268c35ccd82f01ee48b2d36c7111c0c25db 
+20200821:080835 _GET request 
+ csvtbllist => yes  csrf_token_form => 91fcf268c35ccd82f01ee48b2d36c7111c0c25db 
+20200821:080835 _GET request 
+ loglist => yes  csrf_token_form => 91fcf268c35ccd82f01ee48b2d36c7111c0c25db 
+20200821:080835 _GET request 
+ archlist => yes  csrf_token_form => 91fcf268c35ccd82f01ee48b2d36c7111c0c25db 
+20200821:080835 csv_archive_select_list: using /var/www/html/altavision/sites/default/documents/edi/history/archive
