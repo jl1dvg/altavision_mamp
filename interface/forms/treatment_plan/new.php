@@ -198,6 +198,7 @@ echo "<form method='post' name='my_form' " .
     </tr>
 </table>
 </form>
+</body>
 <?php
 formFooter();
 ?>
